@@ -65,11 +65,26 @@
     {% endif %}
   </div>
 
-  <!-- QR Code -->
+  <!-- Collaborative Playlist -->
   <div class="card">
-    <h2>Guest QR Code</h2>
-    <p>Customers scan this to request songs.</p>
-    <img src="{{ url_for('static', filename='qr_code.png') }}" alt="QR Code" class="qr-code" />
+    <h2>Collaborative Playlist</h2>
+    {% if state.playlist %}
+      <p>Customers scan the QR code to open the playlist in Spotify and add songs directly.</p>
+      <div style="display:flex;align-items:center;gap:20px;margin:14px 0;">
+        <img src="{{ url_for('static', filename='qr_code.png') }}" alt="QR Code" class="qr-code" />
+        <div>
+          <p style="margin-bottom:10px;">
+            <a href="{{ state.playlist.url }}" target="_blank" class="btn">Open Playlist in Spotify</a>
+          </p>
+          <p class="muted" style="font-size:.8rem;word-break:break-all;">{{ state.playlist.url }}</p>
+        </div>
+      </div>
+      <form method="POST" action="/admin/new-playlist" style="margin-top:10px;">
+        <button type="submit" class="btn btn-danger btn-small">Create New Playlist</button>
+      </form>
+    {% else %}
+      <p class="muted">No playlist yet — connect Spotify to create one automatically.</p>
+    {% endif %}
   </div>
 
 {% endif %}

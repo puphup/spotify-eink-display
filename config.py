@@ -25,8 +25,8 @@ DISPLAY_REFRESH_INTERVAL = int(os.getenv("DISPLAY_REFRESH_INTERVAL", 5))  # seco
 EINK_WIDTH = int(os.getenv("EINK_WIDTH", 480))    # portrait width
 EINK_HEIGHT = int(os.getenv("EINK_HEIGHT", 800))  # portrait height
 
-# Request queue
-SONG_REQUEST_PLAYLIST_ID = os.getenv("SONG_REQUEST_PLAYLIST_ID", "")  # optional target playlist
+# Collaborative playlist
+COLLABORATIVE_PLAYLIST_NAME = os.getenv("COLLABORATIVE_PLAYLIST_NAME", "Café Song Requests")
 GUEST_REQUESTS_ENABLED = os.getenv("GUEST_REQUESTS_ENABLED", "true").lower() == "true"
 
 # Paths
@@ -34,4 +34,6 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CACHE_DIR = os.path.join(BASE_DIR, ".cache")
 os.makedirs(CACHE_DIR, exist_ok=True)
 SPOTIFY_CACHE_PATH = os.path.join(CACHE_DIR, ".spotify_token")
-QR_CODE_PATH = os.path.join(BASE_DIR, "web", "static", "qr_code.png")
+PLAYLIST_CACHE_PATH = os.path.join(CACHE_DIR, "playlist.json")
+QR_CODE_PATH = os.path.join(BASE_DIR, "web", "static", "qr_code.png")  # web UI
+QR_DISPLAY_PATH = os.path.join(CACHE_DIR, "qr_display.png")             # e-ink overlay

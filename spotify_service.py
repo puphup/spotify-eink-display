@@ -95,6 +95,40 @@ def add_track_to_playlist(sp: spotipy.Spotify, playlist_id: str, track_uri: str)
         return False
 
 
+def ensure_collaborative_playlist(sp: spotipy.Spotify, name: str, cache_path: str) -> dict:
+    """
+    Load the collaborative playlist from cache, verify it still exists,
+    or create a new one. Returns {"id": str, "url": str}.
+    """
+    import json, os
+
+    if os.path.exists(cache_path):
+        with open(cache_path) as f:
+            data = json.load(f)
+        try:
+            sp.playlist(data["id"], fields="id")  # verify it exists
+            return data
+        except Exception:
+            pass  # playlist was deleted — create a new one
+
+    user = sp.me()
+    playlist = sp.user_playlist_create(
+        user["id"],
+        name,
+        public=False,       # collaborative playlists must be private
+        collaborative=True,
+        description="Scan the QR code to add songs to this café playlist!",
+    )
+    data = {
+        "id": playlist["id"],
+        "url": playlist["external_urls"]["spotify"],
+    }
+    with open(cache_path, "w") as f:
+        json.dump(data, f)
+    print(f"[playlist] Created collaborative playlist: {data['url']}")
+    return data
+
+
 def skip_track(sp: spotipy.Spotify) -> bool:
     try:
         sp.next_track()

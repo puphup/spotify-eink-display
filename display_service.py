@@ -166,12 +166,31 @@ def _bottom_overlay(width: int, overlay_height: int) -> Image.Image:
 # Main image builders
 # ---------------------------------------------------------------------------
 
-def build_display_image(track: dict) -> Image.Image:
+def _overlay_qr(canvas: Image.Image, qr_path: str, size: int = 110, padding: int = 10):
+    """Paste the QR code into the top-right corner of the canvas (in-place)."""
+    try:
+        qr = Image.open(qr_path).convert("RGB")
+        qr = qr.resize((size, size), Image.LANCZOS)
+
+        # White rounded-rect background for scannability
+        bg_size = size + padding * 2
+        bg = Image.new("RGBA", (bg_size, bg_size), (255, 255, 255, 230))
+        bg.paste(qr, (padding, padding))
+
+        x = canvas.width - bg_size - 12
+        y = 12
+        canvas.paste(bg, (x, y), bg)
+    except Exception as e:
+        print(f"[display] QR overlay failed: {e}")
+
+
+def build_display_image(track: dict, qr_path: str | None = None) -> Image.Image:
     """
     Portrait layout (480 × 800):
     - Album art fills full screen, sharp (no blur)
     - Bottom 20% (~160px) has a dark overlay with track info
     - "NOW PLAYING" pill top-left of the overlay
+    - QR code for the collaborative playlist in top-right corner
     """
     width, height = config.EINK_WIDTH, config.EINK_HEIGHT   # 480 × 800
     overlay_height = int(height * 0.20)                      # 160px
@@ -183,6 +202,10 @@ def build_display_image(track: dict) -> Image.Image:
         canvas = _cover_crop(art, width, height).convert("RGBA")
     else:
         canvas = Image.new("RGBA", (width, height), (20, 20, 20, 255))
+
+    # --- QR code — top-right corner ---
+    if qr_path:
+        _overlay_qr(canvas, qr_path)
 
     # --- Bottom overlay (20%) ---
     overlay = _bottom_overlay(width, overlay_height)
@@ -230,20 +253,34 @@ def build_display_image(track: dict) -> Image.Image:
     return canvas.convert("RGB")
 
 
-def build_idle_image() -> Image.Image:
+def build_idle_image(qr_path: str | None = None) -> Image.Image:
     width, height = config.EINK_WIDTH, config.EINK_HEIGHT
-    canvas = Image.new("RGB", (width, height), (12, 12, 12))
-    draw = ImageDraw.Draw(canvas)
+    canvas = Image.new("RGBA", (width, height), (12, 12, 12, 255))
 
-    font = _load_font(36, bold=True)
-    font_sub = _load_font(22)
+    if qr_path:
+        # On idle, show QR larger and centered
+        try:
+            qr = Image.open(qr_path).convert("RGB")
+            qr_size = 200
+            qr = qr.resize((qr_size, qr_size), Image.LANCZOS)
+            bg = Image.new("RGBA", (qr_size + 20, qr_size + 20), (255, 255, 255, 255))
+            bg.paste(qr, (10, 10))
+            x = (width - bg.width) // 2
+            y = height // 2 - 60
+            canvas.paste(bg, (x, y), bg)
+        except Exception:
+            pass
+
+    draw = ImageDraw.Draw(canvas)
+    font = _load_font(34, bold=True)
+    font_sub = _load_font(20)
 
     text = "Nothing Playing"
     tw = draw.textbbox((0, 0), text, font=font)[2]
-    draw.text(((width - tw) // 2, height // 2 - 50), text, font=font, fill=(220, 220, 220))
+    draw.text(((width - tw) // 2, height // 2 - 290), text, font=font, fill=(220, 220, 220))
 
-    sub = "Scan QR to request a song"
+    sub = "Scan QR to add songs to the playlist"
     sw = draw.textbbox((0, 0), sub, font=font_sub)[2]
-    draw.text(((width - sw) // 2, height // 2 + 20), sub, font=font_sub, fill=(90, 90, 90))
+    draw.text(((width - sw) // 2, height // 2 + 170), sub, font=font_sub, fill=(90, 90, 90))
 
-    return canvas
+    return canvas.convert("RGB")
