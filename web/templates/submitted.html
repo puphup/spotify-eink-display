@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Request Submitted{% endblock %}
+{% block content %}
+
+<div class="card center">
+  <h1>Thanks!</h1>
+  <p>Your request for <strong>{{ title }}</strong> by {{ artist }} has been added.</p>
+  <a href="/request" class="btn">Request Another Song</a>
+</div>
+
+{% endblock %}

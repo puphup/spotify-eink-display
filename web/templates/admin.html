@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Admin — Café Music{% endblock %}
+{% block content %}
+
+<h1>Admin Dashboard</h1>
+
+{% if not authenticated %}
+  <div class="card warning">
+    <p>Not connected to Spotify.</p>
+    <a href="/login" class="btn">Connect Spotify</a>
+  </div>
+{% else %}
+
+  <!-- Now Playing -->
+  <div class="card">
+    <h2>Now Playing</h2>
+    {% if state.current_track and state.current_track.is_playing %}
+      <div class="now-playing">
+        {% if state.current_track.album_art_url %}
+          <img src="{{ state.current_track.album_art_url }}" alt="Album Art" class="album-thumb" />
+        {% endif %}
+        <div>
+          <p class="track-title">{{ state.current_track.title }}</p>
+          <p class="track-artist">{{ state.current_track.artist }}</p>
+          <p class="track-album">{{ state.current_track.album }}</p>
+        </div>
+      </div>
+    {% else %}
+      <p class="muted">Nothing is playing right now.</p>
+    {% endif %}
+
+    <form method="POST" action="/admin/skip">
+      <button type="submit" class="btn">⏭ Skip Track</button>
+    </form>
+  </div>
+
+  <!-- Guest Requests -->
+  <div class="card">
+    <h2>Guest Requests</h2>
+    <p>Status: <strong>{{ "Enabled" if state.guest_requests_enabled else "Disabled" }}</strong></p>
+    <form method="POST" action="/admin/toggle_requests">
+      <button type="submit" class="btn {{ 'btn-danger' if state.guest_requests_enabled else '' }}">
+        {{ "Disable" if state.guest_requests_enabled else "Enable" }} Requests
+      </button>
+    </form>
+  </div>
+
+  <!-- Request Queue -->
+  <div class="card">
+    <h2>Request Queue ({{ state.request_queue | length }})</h2>
+    {% if state.request_queue %}
+      <ul class="queue-list">
+        {% for item in state.request_queue %}
+          {% set i = loop.index0 %}
+          <li>
+            <span><strong>{{ item.title }}</strong> — {{ item.artist }}</span>
+            <form method="POST" action="/admin/queue/remove/{{ i }}" style="display:inline">
+              <button type="submit" class="btn btn-small btn-danger">Remove</button>
+            </form>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="muted">Queue is empty.</p>
+    {% endif %}
+  </div>
+
+  <!-- QR Code -->
+  <div class="card">
+    <h2>Guest QR Code</h2>
+    <p>Customers scan this to request songs.</p>
+    <img src="{{ url_for('static', filename='qr_code.png') }}" alt="QR Code" class="qr-code" />
+  </div>
+
+{% endif %}
+{% endblock %}

@@ -1,0 +1,172 @@
+/* -------------------------------------------------------
+   Base
+------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0f0f0f;
+  --surface: #1a1a1a;
+  --surface2: #222;
+  --border: #333;
+  --text: #f0f0f0;
+  --muted: #888;
+  --accent: #1db954;
+  --danger: #e05260;
+  --radius: 12px;
+  --font: 'Segoe UI', system-ui, sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.6;
+  padding: 24px 16px;
+}
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+h1 { font-size: 1.8rem; margin-bottom: 24px; }
+h2 { font-size: 1.2rem; margin-bottom: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; font-size: .85rem; }
+
+/* -------------------------------------------------------
+   Cards
+------------------------------------------------------- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.card.warning {
+  border-color: var(--danger);
+  background: #1f1215;
+}
+
+.card.center { text-align: center; }
+.card.center h1 { font-size: 2.4rem; margin-bottom: 12px; }
+.card.center p { margin-bottom: 20px; }
+
+/* -------------------------------------------------------
+   Buttons
+------------------------------------------------------- */
+.btn {
+  display: inline-block;
+  background: var(--accent);
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: .95rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity .15s;
+}
+.btn:hover { opacity: .85; }
+.btn-danger { background: var(--danger); color: #fff; }
+.btn-small { padding: 4px 12px; font-size: .8rem; }
+
+/* -------------------------------------------------------
+   Now Playing
+------------------------------------------------------- */
+.now-playing {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.album-thumb {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.track-title { font-size: 1.1rem; font-weight: 600; }
+.track-artist { color: var(--muted); font-size: .95rem; }
+.track-album { color: var(--muted); font-size: .85rem; margin-top: 2px; }
+
+/* -------------------------------------------------------
+   Queue
+------------------------------------------------------- */
+.queue-list { list-style: none; }
+.queue-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+}
+.queue-list li:last-child { border-bottom: none; }
+
+/* -------------------------------------------------------
+   QR Code
+------------------------------------------------------- */
+.qr-code {
+  display: block;
+  width: 180px;
+  height: 180px;
+  margin-top: 10px;
+  border-radius: 8px;
+  background: #fff;
+  padding: 8px;
+}
+
+/* -------------------------------------------------------
+   Search
+------------------------------------------------------- */
+.search-row {
+  display: flex;
+  gap: 10px;
+}
+
+.search-input {
+  flex: 1;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  padding: 10px 14px;
+  font-size: 1rem;
+}
+.search-input:focus { outline: none; border-color: var(--accent); }
+
+/* -------------------------------------------------------
+   Results
+------------------------------------------------------- */
+.results-list { list-style: none; }
+.result-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.result-item:last-child { border-bottom: none; }
+
+.album-thumb-sm {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.result-info { flex: 1; }
+.result-info .track-title { font-size: 1rem; font-weight: 500; }
+.result-info .track-artist { font-size: .85rem; color: var(--muted); }
+
+/* -------------------------------------------------------
+   Misc
+------------------------------------------------------- */
+.muted { color: var(--muted); font-size: .95rem; }

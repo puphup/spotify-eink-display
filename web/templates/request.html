@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Request a Song{% endblock %}
+{% block content %}
+
+<h1>Request a Song</h1>
+
+{% if not enabled %}
+  <div class="card warning">
+    <p>Song requests are currently disabled. Ask the staff to enable them.</p>
+  </div>
+{% else %}
+
+  <div class="card">
+    <form method="GET" action="/request/search">
+      <div class="search-row">
+        <input
+          type="text"
+          name="q"
+          placeholder="Search for a song or artist..."
+          value="{{ query }}"
+          class="search-input"
+          autofocus
+        />
+        <button type="submit" class="btn">Search</button>
+      </div>
+    </form>
+  </div>
+
+  {% if results %}
+    <div class="card">
+      <h2>Results</h2>
+      <ul class="results-list">
+        {% for track in results %}
+          <li class="result-item">
+            {% if track.album_art_url %}
+              <img src="{{ track.album_art_url }}" alt="" class="album-thumb-sm" />
+            {% endif %}
+            <div class="result-info">
+              <p class="track-title">{{ track.title }}</p>
+              <p class="track-artist">{{ track.artist }}</p>
+            </div>
+            <form method="POST" action="/request/submit">
+              <input type="hidden" name="uri" value="{{ track.uri }}" />
+              <input type="hidden" name="title" value="{{ track.title }}" />
+              <input type="hidden" name="artist" value="{{ track.artist }}" />
+              <button type="submit" class="btn">Request</button>
+            </form>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% elif query %}
+    <div class="card">
+      <p class="muted">No results found for "{{ query }}".</p>
+    </div>
+  {% endif %}
+
+{% endif %}
+{% endblock %}
