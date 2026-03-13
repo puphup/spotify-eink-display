@@ -2,6 +2,9 @@
 .env
 .cache/
 
+# Generated at runtime
+web/static/qr_code.png
+
 # Python
 __pycache__/
 *.py[cod]

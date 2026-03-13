@@ -145,7 +145,8 @@ def handle_callback(sp: spotipy.Spotify, code: str) -> bool:
     try:
         sp.auth_manager.get_access_token(code)
         return True
-    except Exception:
+    except Exception as e:
+        print(f"[auth] Callback error: {e}")
         return False
 
 

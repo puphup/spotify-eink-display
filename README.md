@@ -11,8 +11,8 @@ A Raspberry Pi project that displays the currently playing Spotify track on a **
 - Full-color album art on e-ink display (portrait orientation)
 - Track title and artist overlay with multilingual support (Thai, Japanese, CJK, Arabic, Latin)
 - Auto-refreshes only when the track changes
-- Guest song request page accessible via QR code
-- Admin web UI: skip tracks, enable/disable requests, manage queue
+- Collaborative Spotify playlist — customers scan a QR code (shown on the display) to add songs directly
+- Admin web UI: skip tracks, enable/disable requests, manage queue, manage collaborative playlist
 - Mock mode for development on non-Pi hardware (outputs PNG preview)
 
 ---
@@ -166,9 +166,9 @@ spotify-display/
 
 | URL | Description |
 |-----|-------------|
-| `/admin` | Admin dashboard (skip, queue, toggle requests) |
-| `/request` | Guest song request page |
-| `/api/status` | JSON status endpoint |
+| `/admin` | Admin dashboard (skip, queue, toggle requests, manage playlist) |
+| `/admin/new-playlist` | Create a fresh collaborative playlist (POST) |
+| `/api/status` | JSON status endpoint (includes `playlist`, `queue_length`, `current_track`) |
 
 ---
 
