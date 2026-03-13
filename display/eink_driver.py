@@ -41,7 +41,7 @@ class EinkDisplay:
         Rotates 90° CW to fit the physical 800×480 landscape panel.
         """
         # Rotate portrait → landscape for the physical hardware
-        landscape = image.rotate(-90, expand=True)
+        landscape = image.rotate(90, expand=True)
 
         if MOCK_MODE:
             self._mock_display(image)  # save portrait for easy preview
